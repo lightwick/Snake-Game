@@ -1,4 +1,5 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
+#define DEBUG
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -16,6 +17,8 @@
 #define LEFT 75
 #define RIGHT 77
 
+#define MAX_SIZE 30
+
 int length;
 int bend_no;
 int len;
@@ -26,12 +29,14 @@ int life;
 void Delay(long double);
 void Move();
 void Food();
+void setFoodCoordinate();
+void drawFood();
 int Score();
 void Print();
 void gotoxy(int x, int y);
 void GotoXY(int x, int y);
 void Bend();
-void Boarder();
+void Border();
 void Down();
 void Left();
 void Up();
@@ -48,10 +53,12 @@ struct coordinate
 
 typedef struct coordinate coordinate;
 
-coordinate head, bend[500], food, body[30];
+// TODO: change body to dynamic memory allocation
+coordinate head, bend[500], food, body[MAX_SIZE];
 
 int main()
 {
+    ShowConsoleCursor(0);
 
     char key;
 
@@ -59,7 +66,9 @@ int main()
 
     cls();
 
+#ifndef DEBUG
     load();
+#endif
 
     length = 5;
 
@@ -69,11 +78,13 @@ int main()
 
     head.direction = RIGHT;
 
-    Boarder();
+    Border();
 
     Food(); //to generate food coordinates initially
 
     life = 3; //number of extra lives
+
+    Score();
 
     bend[0] = head;
 
@@ -89,13 +100,16 @@ void Move()
 
     do
     {
+        gotoxy(body[length-1].x, body[length-1].y);
+        printf(" ");
+        gotoxy(0, 0);
 
         Food();
         fflush(stdin);
 
         len = 0;
 
-        for (i = 0; i < 30; i++)
+        for (i = 0; i < MAX_SIZE; i++)
 
         {
 
@@ -104,14 +118,13 @@ void Move()
             body[i].y = 0;
 
             if (i == length)
-
                 break;
 
         }
 
         Delay(length);
 
-        Boarder();
+        // Boarder();
 
         if (head.direction == RIGHT)
 
@@ -254,7 +267,6 @@ void Down()
 }
 void Delay(long double k)
 {
-    Score();
     long double i;
     for (i = 0; i <= (10000000); i++);
 }
@@ -266,19 +278,27 @@ void ExitGame()
         if (body[0].x == body[i].x && body[0].y == body[i].y)
         {
             check++;    //check's value increases as the coordinates of head is equal to any other body coordinate
-        }
-        if (i == length || check != 0)
             break;
+        }
     }
     if (head.x <= 10 || head.x >= 70 || head.y <= 10 || head.y >= 30 || check != 0)
     {
+#ifndef DEBUG //if DEBUGGING, no life decrease
         life--;
+#endif
+        Score();
         if (life >= 0)
         {
             head.x = 25;
             head.y = 20;
             bend_no = 0;
             head.direction = RIGHT;
+
+            cls();
+            Border();
+            drawFood();
+            Score();
+
             Move();
         }
         else
@@ -290,31 +310,46 @@ void ExitGame()
         }
     }
 }
+// 1 if x,y is part of the body(including head), 0 otherwise
+int isPartOfBody(int x, int y) {
+    for (int i = 0; i < MAX_SIZE; i++) {
+        if (body[i].x == x && body[i].y == y) return 1;
+    }
+    return 0;
+}
+// set food coordinate if needed
 void Food()
 {
     if (head.x == food.x && head.y == food.y)
     {
         length++;
-        time_t a;
-        a = time(0);
-        srand(a);
-        food.x = rand() % 70;
-        if (food.x <= 10)
-            food.x += 11;
-        food.y = rand() % 30;
-        if (food.y <= 10)
+        Score();
 
-            food.y += 11;
+        setFoodCoordinate();
+        drawFood();
     }
     else if (food.x == 0)/*to create food for the first time coz global variable are initialized with 0*/
     {
-        food.x = rand() % 70;
-        if (food.x <= 10)
-            food.x += 11;
-        food.y = rand() % 30;
-        if (food.y <= 10)
-            food.y += 11;
+        setFoodCoordinate();
+        drawFood();
     }
+}
+void setFoodCoordinate() {
+    srand(time(0));
+
+    int x, y;
+
+    do {
+        x = rand() % 59 + 11; // 11<= x <= 59
+        y = rand() % 19 + 11; // 11 <= y <= 29
+    } while (isPartOfBody(x, y));
+
+    food.x = x;
+    food.y = y;
+}
+void drawFood() {
+    gotoxy(food.x, food.y);
+    printf("F");
 }
 void Left()
 {
@@ -425,9 +460,9 @@ void Bend()
         }
     }
 }
-void Boarder()
+void Border()
 {
-    cls();
+    // cls();
     int i;
     GotoXY(food.x, food.y);   /*displaying food*/
     printf("F");

@@ -35,3 +35,14 @@ void cls()
     // Move the cursor back to the top left for the next sequence of writes
     SetConsoleCursorPosition(hOut, topLeft);
 }
+
+void ShowConsoleCursor(int showFlag)
+{
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_CURSOR_INFO     cursorInfo;
+
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = showFlag; // set the cursor visibility
+    SetConsoleCursorInfo(out, &cursorInfo);
+}
