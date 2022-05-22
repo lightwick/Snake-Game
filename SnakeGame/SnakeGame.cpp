@@ -243,8 +243,7 @@ void Down()
 }
 void Delay(long double k)
 {
-    long double i;
-    for (i = 0; i <= (10000000); i++);
+    Sleep(40);
 }
 void ExitGame()
 {
