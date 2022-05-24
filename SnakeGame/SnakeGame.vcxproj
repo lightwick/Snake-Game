@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bomb.cpp" />
     <ClCompile Include="console_related.cpp" />
     <ClCompile Include="SnakeGame.cpp" />
   </ItemGroup>

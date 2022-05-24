@@ -58,6 +58,8 @@ coordinate head, bend[500], food, body[MAX_SIZE];
 
 int main()
 {
+    consoleInit();
+
     ShowConsoleCursor(0);
 
     char key;
