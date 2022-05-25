@@ -11,38 +11,14 @@
 #include <process.h>
 #include <Windows.h>
 #include "console_related.h"
-
-#define UP 72
-#define DOWN 80
-#define LEFT 75
-#define RIGHT 77
-
-#define MAX_SIZE 30
+#include "value.h"
+#include "SnakeGame.h"
 
 int length;
 int bend_no;
 int len;
 char key;
-void record();
-void load();
 int life;
-void Delay(long double);
-void Move();
-void Food();
-void setFoodCoordinate();
-void drawFood();
-int Score();
-void Print();
-void gotoxy(int x, int y);
-void GotoXY(int x, int y);
-void Bend();
-void Border();
-void Down();
-void Left();
-void Up();
-void Right();
-void ExitGame();
-int Scoreonly();
 
 struct coordinate
 {
@@ -269,8 +245,7 @@ void Down()
 }
 void Delay(long double k)
 {
-    long double i;
-    for (i = 0; i <= (10000000); i++);
+    Sleep(40);
 }
 void ExitGame()
 {

@@ -6,3 +6,4 @@ because newly implemented method doesn't call 'cls' often.
 with " ".
 Leave alone where no changes are needed.
 3. turned off blinking cursor
+4. changed delay function to Sleep from for loop
