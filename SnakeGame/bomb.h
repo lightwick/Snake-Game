@@ -1,2 +1,2 @@
-void setBomb();
+void setBomb(int score);
 void decreaseTimer();

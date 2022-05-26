@@ -5,8 +5,6 @@
 #include <stdio.h>
 
 #define DEBUG
-#define G_WIDTH X_END-X_BEGIN-1
-#define G_HEIGHT Y_END-Y_BEGIN-1
 
 typedef struct coordinate coordinate;
 extern coordinate head, bend[500], food, body[MAX_SIZE];
@@ -17,9 +15,9 @@ int tick = 0;
 int g_bombTimer[G_HEIGHT][G_WIDTH];
 
 // sets n x n bomb
-void setBomb() {
+void setBomb(int score) {
 	// n: bomb size; random number between 2 and 4, inclusive
-	int n = rand() % 3 + 2;
+	int n = rand() % 3 + 2 + score/20;
 	// timer: random number between 3 and 5, inclusive
 	int timer = rand() % 3 + 3;
 	
@@ -58,6 +56,7 @@ void decreaseTimer() {
 					setTextColor(RED);
 					printf("B");
 					setTextColor(WHITE);
+					if (isDead()) ExitGame();
 					break;
 				default:
 					printf("%d", g_bombTimer[i][j]);

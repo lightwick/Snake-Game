@@ -19,3 +19,7 @@
 // color code for setting text color
 #define RED 12
 #define WHITE 15
+
+// game board width and height info
+#define G_WIDTH X_END-X_BEGIN-1
+#define G_HEIGHT Y_END-Y_BEGIN-1

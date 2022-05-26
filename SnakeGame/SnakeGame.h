@@ -19,3 +19,4 @@ void Right();
 void ExitGame();
 int Scoreonly();
 void init();
+int isDead();
