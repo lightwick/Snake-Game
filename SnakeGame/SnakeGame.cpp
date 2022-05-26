@@ -13,12 +13,15 @@
 #include "console_related.h"
 #include "value.h"
 #include "SnakeGame.h"
+#include "bomb.h"
 
 int length;
 int bend_no;
 int len;
 char key;
 int life;
+
+extern int tick;
 
 struct coordinate
 {
@@ -76,6 +79,8 @@ void Move()
 
     do
     {
+        if(tick++%TICKS_REQUIRED==0) decreaseTimer();
+
         gotoxy(body[length-1].x, body[length-1].y);
         printf(" ");
         gotoxy(0, 0);
@@ -441,14 +446,14 @@ void Border()
     int i;
     GotoXY(food.x, food.y);   /*displaying food*/
     printf("F");
-    for (i = 10; i < 71; i++)
+    for (i = X_BEGIN; i <= X_END; i++)
     {
         GotoXY(i, 10);
         printf("!");
         GotoXY(i, 30);
         printf("!");
     }
-    for (i = 10; i < 31; i++)
+    for (i = Y_BEGIN; i < Y_END; i++)
     {
         GotoXY(10, i);
         printf("!");

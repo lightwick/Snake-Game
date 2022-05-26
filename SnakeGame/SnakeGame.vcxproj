@@ -144,6 +144,7 @@
     <ClCompile Include="SnakeGame.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bomb.h" />
     <ClInclude Include="console_related.h" />
     <ClInclude Include="SnakeGame.h" />
     <ClInclude Include="value.h" />
