@@ -1,11 +1,10 @@
 #include <windows.h>
 #include <iostream>
 
+HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
 void cls()
 {
-    // Get the Win32 handle representing standard output.
-    // This generally only has to be done once, so we make it static.
-    static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     COORD topLeft = { 0, 0 };
@@ -17,7 +16,7 @@ void cls()
     std::cout.flush();
 
     // Figure out the current width and height of the console window
-    if (!GetConsoleScreenBufferInfo(hOut, &csbi)) {
+    if (!GetConsoleScreenBufferInfo(out, &csbi)) {
         // TODO: Handle failure!
         abort();
     }
@@ -26,23 +25,25 @@ void cls()
     DWORD written;
 
     // Flood-fill the console with spaces to clear it
-    FillConsoleOutputCharacter(hOut, TEXT(' '), length, topLeft, &written);
+    FillConsoleOutputCharacter(out, TEXT(' '), length, topLeft, &written);
 
     // Reset the attributes of every character to the default.
     // This clears all background colour formatting, if any.
-    FillConsoleOutputAttribute(hOut, csbi.wAttributes, length, topLeft, &written);
+    FillConsoleOutputAttribute(out, csbi.wAttributes, length, topLeft, &written);
 
     // Move the cursor back to the top left for the next sequence of writes
-    SetConsoleCursorPosition(hOut, topLeft);
+    SetConsoleCursorPosition(out, topLeft);
 }
 
 void ShowConsoleCursor(int showFlag)
 {
-    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
-
     CONSOLE_CURSOR_INFO     cursorInfo;
 
     GetConsoleCursorInfo(out, &cursorInfo);
     cursorInfo.bVisible = showFlag; // set the cursor visibility
     SetConsoleCursorInfo(out, &cursorInfo);
+}
+
+void setTextColor(WORD color) {
+    SetConsoleTextAttribute(out, color);
 }

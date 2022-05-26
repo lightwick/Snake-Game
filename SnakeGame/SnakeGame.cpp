@@ -20,6 +20,7 @@ int bend_no;
 int len;
 char key;
 int life;
+int score;
 
 extern int tick;
 
@@ -37,7 +38,7 @@ coordinate head, bend[500], food, body[MAX_SIZE];
 
 int main()
 {
-    ShowConsoleCursor(0);
+    init();
 
     char key;
 
@@ -79,13 +80,20 @@ void Move()
 
     do
     {
-        if(tick++%TICKS_REQUIRED==0) decreaseTimer();
+        if (tick++ % TICKS_REQUIRED == 0) {
+            decreaseTimer();
+            if (score < 15) {
+                if (rand() % (15 - score) == 0) setBomb();
+            }
+            else setBomb();
+        }
 
         gotoxy(body[length-1].x, body[length-1].y);
         printf(" ");
         gotoxy(0, 0);
 
         Food();
+        drawFood();
         fflush(stdin);
 
         len = 0;
@@ -306,12 +314,10 @@ void Food()
         Score();
 
         setFoodCoordinate();
-        drawFood();
     }
     else if (food.x == 0)/*to create food for the first time coz global variable are initialized with 0*/
     {
         setFoodCoordinate();
-        drawFood();
     }
 }
 void setFoodCoordinate() {
@@ -525,7 +531,6 @@ void record()
 }
 int Score()
 {
-    int score;
     GotoXY(20, 8);
     score = length - 5;
     printf("SCORE : %d", (length - 5));
@@ -536,7 +541,7 @@ int Score()
 }
 int Scoreonly()
 {
-    int score = Score();
+    Score();
     cls();
     return score;
 }
@@ -559,4 +564,8 @@ void Up()
     Bend();
     if (!_kbhit())
         head.y--;
+}
+
+void init() {
+    ShowConsoleCursor(0);
 }

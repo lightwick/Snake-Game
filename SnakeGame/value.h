@@ -14,4 +14,8 @@
 #define Y_END 30
 
 // number of ticks needed for bomb number to decrease
-#define TICKS_REQUIRED 3
+#define TICKS_REQUIRED 5
+
+// color code for setting text color
+#define RED 12
+#define WHITE 15
