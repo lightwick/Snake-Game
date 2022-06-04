@@ -17,10 +17,10 @@ int g_bombTimer[G_HEIGHT][G_WIDTH];
 // sets n x n bomb
 void setBomb(int score) {
 	// n: bomb size; random number between 2 and 4, inclusive
-	int n = rand() % 3 + 2 + score/20;
+	int n = rand() % 3 + 2 + score / 20;
 	// timer: random number between 3 and 5, inclusive
 	int timer = rand() % 3 + 3;
-	
+
 	int abs_right_limit = X_END - n;
 	int abs_left_limit = X_BEGIN + 1;
 	int abs_bottom_limit = Y_END - n;
