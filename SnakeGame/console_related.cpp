@@ -5,7 +5,6 @@ HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
 
 void cls()
 {
-
     CONSOLE_SCREEN_BUFFER_INFO csbi;
     COORD topLeft = { 0, 0 };
 
@@ -46,4 +45,17 @@ void ShowConsoleCursor(int showFlag)
 
 void setTextColor(WORD color) {
     SetConsoleTextAttribute(out, color);
+}
+
+void consoleInit() {
+    LPCWSTR consoleTitle = L"Snake Game - By Noh Yong Jae";
+    SetConsoleTitle(consoleTitle);
+
+    HWND hwnd = GetConsoleWindow();
+    // struct RECT: left, top, right bottom in that order
+    RECT rect = { 100, 100, 780, 700 };
+
+    MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
+  
+    ShowConsoleCursor(0);
 }
