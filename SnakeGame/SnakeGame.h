@@ -1,0 +1,20 @@
+#pragma once
+void record();
+void load();
+void Delay(long double);
+void Move();
+void Food();
+void setFoodCoordinate();
+void drawFood();
+int Score();
+void Print();
+void gotoxy(int x, int y);
+void GotoXY(int x, int y);
+void Bend();
+void Border();
+void Down();
+void Left();
+void Up();
+void Right();
+void ExitGame();
+int Scoreonly();

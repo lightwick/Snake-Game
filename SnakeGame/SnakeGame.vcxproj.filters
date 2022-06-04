@@ -35,5 +35,8 @@
     <ClInclude Include="easter_egg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="SnakeGame.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
