@@ -21,12 +21,18 @@
     <ClCompile Include="console_related.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="easter_egg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console_related.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="value.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="easter_egg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
