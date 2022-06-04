@@ -1,7 +1,7 @@
 #pragma once
 void record();
 void load();
-void Delay(long double);
+void Delay();
 void Move();
 void Food();
 void setFoodCoordinate();

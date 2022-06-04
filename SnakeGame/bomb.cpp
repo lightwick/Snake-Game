@@ -36,7 +36,7 @@ void setBomb(int score) {
 			// if there already is a bomb in the area, do not place a new one
 			if (*nextBomb != -1) continue;
 			g_bombTimer[abs_top_left_y - 11 + i][abs_top_left_x - 11 + j] = timer;
-			printf("%d", timer);
+			wprintf(L"%d", timer);
 		}
 	}
 }
@@ -50,16 +50,16 @@ void decreaseTimer() {
 
 				switch (g_bombTimer[i][j]) {
 				case -1:
-					printf(" ");
+					wprintf(L" ");
 					break;
 				case 0:
 					setTextColor(RED);
-					printf("B");
+					wprintf(L"B");
 					setTextColor(WHITE);
 					if (isDead()) ExitGame();
 					break;
 				default:
-					printf("%d", g_bombTimer[i][j]);
+					wprintf(L"%d", g_bombTimer[i][j]);
 				}
 			}
 		}

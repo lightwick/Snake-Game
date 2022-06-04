@@ -38,9 +38,12 @@ typedef struct coordinate coordinate;
 coordinate head, bend[500], food, body[MAX_SIZE];
 char plname[20];
 
+clock_t begin, end;
+
+
 int main()
 {
-	consoleInit();
+	init();
 
 	Print();
 
@@ -90,11 +93,10 @@ void Move()
 
 		gotoxy(body[length - 1].x, body[length - 1].y);
 		wprintf(L" ");
-		gotoxy(0, 0);
 
 		Food();
 		drawFood();
-		fflush(stdin);
+		// fflush(stdin);
 
 		len = 0;
 
@@ -110,9 +112,9 @@ void Move()
 				break;
 
 		}
-
-		Delay(length);
-
+		end = clock();
+		Delay();
+		begin = clock();
 		// Boarder();
 
 		if (head.direction == RIGHT)
@@ -224,7 +226,7 @@ void GotoXY(int x, int y)
 void load()
 {
 	gotoxy(36, 14);
-	printf("Enter your name:");
+	wprintf(L"Enter your name:");
 	ShowConsoleCursor(1);
 	scanf("%19s", plname);
 	ShowConsoleCursor(0);
@@ -232,15 +234,15 @@ void load()
 
 	int row, col, r, c, q;
 	gotoxy(36, 14);
-	printf("game starting in");
+	wprintf(L"game starting in");
 	gotoxy(36, 15);
 	for (r = 3; r >= 1; r--)
 	{
-		printf("%d", r);
+		wprintf(L"%d", r);
 		Sleep(250); //to display the character slowly
-		printf(".");
+		wprintf(L".");
 		Sleep(250);
-		printf(". ");
+		wprintf(L". ");
 		Sleep(250);
 	}
 }
@@ -264,9 +266,13 @@ void Down()
 	if (!_kbhit())
 		head.y++;
 }
-void Delay(long double k)
+void Delay()
 {
-	Sleep(40);
+	int elapsed = double(end - begin) / CLOCKS_PER_SEC * 1000;
+	if (begin == 0) elapsed = 0;
+	if (elapsed > 40) elapsed = 40;
+
+	Sleep(40-elapsed);
 }
 void ExitGame()
 {
@@ -455,16 +461,16 @@ void Border()
 	for (i = 10; i < 71; i++)
 	{
 		GotoXY(i, 10);
-		wprintf(L"!");
+		wprintf(L"█");
 		GotoXY(i, 30);
-		wprintf(L"!");
+		wprintf(L"█");
 	}
 	for (i = 10; i < 31; i++)
 	{
 		GotoXY(10, i);
-		wprintf(L"!");
+		wprintf(L"█");
 		GotoXY(70, i);
-		wprintf(L"!");
+		wprintf(L"█");
 	}
 }
 void Print()
@@ -481,14 +487,13 @@ void Print()
 }
 void record()
 {
+	wprintf(L"test");
 	char nplname[20], cha, c;
 	int i, j, px;
 	FILE* info;
 	info = fopen("record.txt", "a+");
 	_getch();
 	cls();
-	wprintf(L"Enter your name\n");
-	scanf("%[^\n]", plname);
 	//************************
 	for (j = 0; plname[j] != '\0'; j++) //to convert the first letter after space to capital
 	{
@@ -516,7 +521,7 @@ void record()
 		fprintf(info, "%c", '_');
 	fprintf(info, "\n");
 	fclose(info);
-	printf("Wanna see past records press 'y'\n");
+	wprintf(L"Wanna see past records press 'y'\n");
 	cha = _getch();
 	cls();
 	if (cha == 'y')
@@ -524,7 +529,8 @@ void record()
 		info = fopen("record.txt", "r");
 		do
 		{
-			putchar(c = getc(info));
+			c = getc(info);
+			wprintf(L"%c", c);
 		} while (c != EOF);
 	}
 	fclose(info);
@@ -583,4 +589,9 @@ int isDead() {
 	}
 
 	return 0;
+}
+
+void init() {
+	consoleInit();
+	easterInit();
 }
