@@ -24,6 +24,9 @@
     <ClCompile Include="easter_egg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="bomb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="console_related.h">

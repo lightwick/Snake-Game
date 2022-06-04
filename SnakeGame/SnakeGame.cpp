@@ -295,7 +295,6 @@ void ExitGame()
             record();
             exit(0);
         }
-    }
 }
 // 1 if x,y is part of the body(including head), 0 otherwise
 int isPartOfBody(int x, int y) {
@@ -310,6 +309,8 @@ void Food()
 	if (head.x == food.x && head.y == food.y)
 	{
 		length++;
+        score++;
+
 		Score();
 
 		setFoodCoordinate();
@@ -480,7 +481,7 @@ void Print()
 }
 void record()
 {
-    char plname[20], nplname[20], cha, c;
+    char nplname[20], cha, c;
     int i, j, px;
     FILE* info;
     info = fopen("record.txt", "a+");
@@ -530,11 +531,8 @@ void record()
 }
 int Score()
 {
-    int score;
     GotoXY(20, 8);
-    score = length - 5;
     wprintf(L"SCORE : %d", (length - 5));
-    score = length - 5;
     GotoXY(50, 8);
     wprintf(L"Life : %d", life);
     return score;
