@@ -1,5 +1,5 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#define DEBUG
+// #define DEBUG
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -35,6 +35,7 @@ typedef struct coordinate coordinate;
 
 // TODO: change body to dynamic memory allocation
 coordinate head, bend[500], food, body[MAX_SIZE];
+char plname[20];
 
 int main()
 {
@@ -192,7 +193,7 @@ void Move()
 
 	{
 
-		printf("\a");
+		//printf("\a");
 
 		Move();
 
@@ -223,16 +224,26 @@ void GotoXY(int x, int y)
 }
 void load()
 {
+	gotoxy(36, 14);
+	printf("Enter your name:");
+	ShowConsoleCursor(1);
+	scanf("%19s", plname);
+	ShowConsoleCursor(0);
+	system("cls");
+
 	int row, col, r, c, q;
 	gotoxy(36, 14);
-	printf("loading...");
-	gotoxy(30, 15);
-	for (r = 1; r <= 20; r++)
+	printf("game starting in");
+	gotoxy(36, 15);
+	for (r = 3; r >= 1; r--)
 	{
-		for (q = 0; q <= 100000000; q++); //to display the character slowly
-		printf("%c", 177);
+		printf("%d", r);
+		Sleep(250); //to display the character slowly
+		printf(".");
+		Sleep(250);
+		printf(". ");
+		Sleep(250);
 	}
-	_getch();
 }
 void Down()
 {
@@ -562,8 +573,6 @@ void init() {
 int isDead() {
 	if (g_bombTimer[head.y - 11][head.x - 11] == 0)
 	{
-		printf("head: %d, %d", head.y, head.x);
-		system("pause");
 		return 1;
 	}
 
