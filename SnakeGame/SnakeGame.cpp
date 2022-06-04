@@ -1,5 +1,5 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
-#define DEBUG
+// #define DEBUG
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
@@ -14,255 +14,264 @@
 #include "easter_egg.h"
 #include "value.h"
 #include "SnakeGame.h"
+#include "bomb.h"
 
 int length;
 int bend_no;
 int len;
 char key;
 int life;
+int score;
 
+extern int tick;
+extern int g_bombTimer[G_HEIGHT][G_WIDTH];
 struct coordinate
 {
-    int x;
-    int y;
-    int direction;
+	int x;
+	int y;
+	int direction;
 };
 
 typedef struct coordinate coordinate;
 
 // TODO: change body to dynamic memory allocation
 coordinate head, bend[500], food, body[MAX_SIZE];
+char plname[20];
 
 int main()
 {
-    consoleInit();
+  consoleInit();
 
-    drawSans();
+	Print();
 
-    ShowConsoleCursor(0);
-
-    Print();
-
-    cls();
+	cls();
 
 #ifndef DEBUG
-    load();
+	load();
 #endif
 
-    length = 5;
+	length = 5;
 
-    head.x = 25;
+	head.x = 25;
 
-    head.y = 20;
+	head.y = 20;
 
-    head.direction = RIGHT;
+	head.direction = RIGHT;
 
-    Border();
+	Border();
 
-    Food(); //to generate food coordinates initially
+	Food(); //to generate food coordinates initially
 
-    life = 3; //number of extra lives
+	life = 3; //number of extra lives
 
-    Score();
+	Score();
 
-    bend[0] = head;
+	bend[0] = head;
 
-    Move();   //initialing initial bend coordinate
+	Move();   //initialing initial bend coordinate
 
-    return 0;
+	return 0;
 
 }
 
 void Move()
 {
-    int a, i;
+	int a, i;
 
-    do
-    {
-        gotoxy(body[length-1].x, body[length-1].y);
-        wprintf(L" ");
-        gotoxy(0, 0);
+	do
+	{
+		if (tick++ % TICKS_REQUIRED == 0) {
+			decreaseTimer();
+			if (score < 15) {
+				if (rand() % (15 - score) == 0) setBomb(score);
+			}
+			else setBomb(score);
+		}
 
-        Food();
-        fflush(stdin);
+		gotoxy(body[length - 1].x, body[length - 1].y);
+		wprintf(L" ");
+		gotoxy(0, 0);
 
-        len = 0;
+		Food();
+		drawFood();
+		fflush(stdin);
 
-        for (i = 0; i < MAX_SIZE; i++)
+		len = 0;
 
-        {
+		for (i = 0; i < MAX_SIZE; i++)
 
-            body[i].x = 0;
+		{
 
-            body[i].y = 0;
+			body[i].x = 0;
 
-            if (i == length)
-                break;
+			body[i].y = 0;
 
-        }
+			if (i == length)
+				break;
 
-        Delay(length);
+		}
 
-        // Boarder();
+		Delay(length);
 
-        if (head.direction == RIGHT)
+		// Boarder();
 
-            Right();
+		if (head.direction == RIGHT)
 
-        else if (head.direction == LEFT)
+			Right();
 
-            Left();
+		else if (head.direction == LEFT)
 
-        else if (head.direction == DOWN)
+			Left();
 
-            Down();
+		else if (head.direction == DOWN)
 
-        else if (head.direction == UP)
+			Down();
 
-            Up();
+		else if (head.direction == UP)
 
-        ExitGame();
+			Up();
 
-    } while (!_kbhit());
+		if(isDead()) ExitGame();
 
-    a = _getch();
+	} while (!_kbhit());
 
-    if (a == 27)
+	a = _getch();
 
-    {
+	if (a == 27)
 
-        cls();
+	{
 
-        exit(0);
+		cls();
 
-    }
-    key = _getch();
+		exit(0);
 
-    if ((key == RIGHT && head.direction != LEFT && head.direction != RIGHT) || (key == LEFT && head.direction != RIGHT && head.direction != LEFT) || (key == UP && head.direction != DOWN && head.direction != UP) || (key == DOWN && head.direction != UP && head.direction != DOWN))
+	}
+	key = _getch();
 
-    {
+	if ((key == RIGHT && head.direction != LEFT && head.direction != RIGHT) || (key == LEFT && head.direction != RIGHT && head.direction != LEFT) || (key == UP && head.direction != DOWN && head.direction != UP) || (key == DOWN && head.direction != UP && head.direction != DOWN))
 
-        bend_no++;
+	{
 
-        bend[bend_no] = head;
+		bend_no++;
 
-        head.direction = key;
+		bend[bend_no] = head;
 
-        if (key == UP)
+		head.direction = key;
 
-            head.y--;
+		if (key == UP)
 
-        if (key == DOWN)
+			head.y--;
 
-            head.y++;
+		if (key == DOWN)
 
-        if (key == RIGHT)
+			head.y++;
 
-            head.x++;
+		if (key == RIGHT)
 
-        if (key == LEFT)
+			head.x++;
 
-            head.x--;
+		if (key == LEFT)
 
-        Move();
+			head.x--;
 
-    }
+		Move();
 
-    else if (key == 27)
+	}
 
-    {
+	else if (key == 27)
 
-        cls();
+	{
 
-        exit(0);
+		cls();
 
-    }
+		exit(0);
 
-    else
+	}
 
-    {
+	else
+    
+  {
 
-        wprintf(L"\a");
+		//printf("\a");
 
-        Move();
+		Move();
 
-    }
+	}
 }
 
 void gotoxy(int x, int y)
 {
 
-    COORD coord;
+	COORD coord;
 
-    coord.X = x;
+	coord.X = x;
 
-    coord.Y = y;
+	coord.Y = y;
 
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+	SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 
 }
 void GotoXY(int x, int y)
 {
-    HANDLE a;
-    COORD b;
-    fflush(stdout);
-    b.X = x;
-    b.Y = y;
-    a = GetStdHandle(STD_OUTPUT_HANDLE);
-    SetConsoleCursorPosition(a, b);
+	HANDLE a;
+	COORD b;
+	fflush(stdout);
+	b.X = x;
+	b.Y = y;
+	a = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleCursorPosition(a, b);
 }
 void load()
 {
-    int row, col, r, c, q;
-    gotoxy(36, 14);
-    wprintf(L"loading...");
-    gotoxy(30, 15);
-    for (r = 1; r <= 20; r++)
-    {
-        for (q = 0; q <= 100000000; q++); //to display the character slowly
-        wprintf(L"%c", 177);
-    }
-    _getch();
+	gotoxy(36, 14);
+	printf("Enter your name:");
+	ShowConsoleCursor(1);
+	scanf("%19s", plname);
+	ShowConsoleCursor(0);
+	system("cls");
+
+	int row, col, r, c, q;
+	gotoxy(36, 14);
+	printf("game starting in");
+	gotoxy(36, 15);
+	for (r = 3; r >= 1; r--)
+	{
+		printf("%d", r);
+		Sleep(250); //to display the character slowly
+		printf(".");
+		Sleep(250);
+		printf(". ");
+		Sleep(250);
+	}
 }
 void Down()
 {
-    int i;
-    for (i = 0; i <= (head.y - bend[bend_no].y) && len < length; i++)
-    {
-        GotoXY(head.x, head.y - i);
-        {
-            if (len == 0)
-                wprintf(L"v");
-            else
-                wprintf(L"*");
-        }
-        body[len].x = head.x;
-        body[len].y = head.y - i;
-        len++;
-    }
-    Bend();
-    if (!_kbhit())
-        head.y++;
+	int i;
+	for (i = 0; i <= (head.y - bend[bend_no].y) && len < length; i++)
+	{
+		GotoXY(head.x, head.y - i);
+		{
+			if (len == 0)
+				wprintf(L"v");
+			else
+				wprintf(L"*");
+		}
+		body[len].x = head.x;
+		body[len].y = head.y - i;
+		len++;
+	}
+	Bend();
+	if (!_kbhit())
+		head.y++;
 }
 void Delay(long double k)
 {
-    Sleep(40);
+	Sleep(40);
 }
 void ExitGame()
 {
-    int i, check = 0;
-    for (i = 4; i < length; i++) //starts with 4 because it needs minimum 4 element to touch its own body
-    {
-        if (body[0].x == body[i].x && body[0].y == body[i].y)
-        {
-            check++;    //check's value increases as the coordinates of head is equal to any other body coordinate
-            break;
-        }
-    }
-    if (head.x <= 10 || head.x >= 70 || head.y <= 10 || head.y >= 30 || check != 0)
-    {
 #ifndef DEBUG //if DEBUGGING, no life decrease
-        life--;
+	life--;
 #endif
         Score();
         if (life >= 0)
@@ -290,40 +299,38 @@ void ExitGame()
 }
 // 1 if x,y is part of the body(including head), 0 otherwise
 int isPartOfBody(int x, int y) {
-    for (int i = 0; i < MAX_SIZE; i++) {
-        if (body[i].x == x && body[i].y == y) return 1;
-    }
-    return 0;
+	for (int i = 0; i < MAX_SIZE; i++) {
+		if (body[i].x == x && body[i].y == y) return 1;
+	}
+	return 0;
 }
 // set food coordinate if needed
 void Food()
 {
-    if (head.x == food.x && head.y == food.y)
-    {
-        length++;
-        Score();
+	if (head.x == food.x && head.y == food.y)
+	{
+		length++;
+		Score();
 
-        setFoodCoordinate();
-        drawFood();
-    }
-    else if (food.x == 0)/*to create food for the first time coz global variable are initialized with 0*/
-    {
-        setFoodCoordinate();
-        drawFood();
-    }
+		setFoodCoordinate();
+	}
+	else if (food.x == 0)/*to create food for the first time coz global variable are initialized with 0*/
+	{
+		setFoodCoordinate();
+	}
 }
 void setFoodCoordinate() {
-    srand(time(0));
+	srand(time(0));
 
-    int x, y;
+	int x, y;
 
-    do {
-        x = rand() % 59 + 11; // 11<= x <= 59
-        y = rand() % 19 + 11; // 11 <= y <= 29
-    } while (isPartOfBody(x, y));
+	do {
+		x = rand() % 59 + 11; // 11<= x <= 59
+		y = rand() % 19 + 11; // 11 <= y <= 29
+	} while (isPartOfBody(x, y));
 
-    food.x = x;
-    food.y = y;
+	food.x = x;
+	food.y = y;
 }
 void drawFood() {
     gotoxy(food.x, food.y);
@@ -534,9 +541,9 @@ int Score()
 }
 int Scoreonly()
 {
-    int score = Score();
-    cls();
-    return score;
+	Score();
+	cls();
+	return score;
 }
 void Up()
 {
@@ -557,4 +564,25 @@ void Up()
     Bend();
     if (!_kbhit())
         head.y--;
+}
+
+
+int isDead() {
+	if (g_bombTimer[head.y - 11][head.x - 11] == 0)
+	{
+		return 1;
+	}
+
+	if (head.x <= 10 || head.x >= 70 || head.y <= 10 || head.y >= 30)
+		return 1;
+
+	for (int i = 4; i < length; i++) //starts with 4 because it needs minimum 4 element to touch its own body
+	{
+		if (body[0].x == body[i].x && body[0].y == body[i].y)
+		{
+			return 1;
+		}
+	}
+
+	return 0;
 }
