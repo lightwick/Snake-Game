@@ -11,6 +11,7 @@
 #include <process.h>
 #include <Windows.h>
 #include "console_related.h"
+#include "easter_egg.h"
 #include "value.h"
 #include "SnakeGame.h"
 
@@ -36,9 +37,9 @@ int main()
 {
     consoleInit();
 
-    ShowConsoleCursor(0);
+    drawSans();
 
-    char key;
+    ShowConsoleCursor(0);
 
     Print();
 
@@ -79,7 +80,7 @@ void Move()
     do
     {
         gotoxy(body[length-1].x, body[length-1].y);
-        printf(" ");
+        wprintf(L" ");
         gotoxy(0, 0);
 
         Food();
@@ -181,7 +182,7 @@ void Move()
 
     {
 
-        printf("\a");
+        wprintf(L"\a");
 
         Move();
 
@@ -214,12 +215,12 @@ void load()
 {
     int row, col, r, c, q;
     gotoxy(36, 14);
-    printf("loading...");
+    wprintf(L"loading...");
     gotoxy(30, 15);
     for (r = 1; r <= 20; r++)
     {
         for (q = 0; q <= 100000000; q++); //to display the character slowly
-        printf("%c", 177);
+        wprintf(L"%c", 177);
     }
     _getch();
 }
@@ -231,9 +232,9 @@ void Down()
         GotoXY(head.x, head.y - i);
         {
             if (len == 0)
-                printf("v");
+                wprintf(L"v");
             else
-                printf("*");
+                wprintf(L"*");
         }
         body[len].x = head.x;
         body[len].y = head.y - i;
@@ -281,7 +282,7 @@ void ExitGame()
         else
         {
             cls();
-            printf("All lives completed\nBetter Luck Next Time!!!\nPress any key to quit the game\n");
+            wprintf(L"All lives completed\nBetter Luck Next Time!!!\nPress any key to quit the game\n");
             record();
             exit(0);
         }
@@ -326,7 +327,7 @@ void setFoodCoordinate() {
 }
 void drawFood() {
     gotoxy(food.x, food.y);
-    printf("F");
+    wprintf(L"F");
 }
 void Left()
 {
@@ -336,9 +337,9 @@ void Left()
         GotoXY((head.x + i), head.y);
         {
             if (len == 0)
-                printf("<");
+                wprintf(L"<");
             else
-                printf("*");
+                wprintf(L"*");
         }
         body[len].x = head.x + i;
         body[len].y = head.y;
@@ -360,9 +361,9 @@ void Right()
         GotoXY(body[len].x, body[len].y);
         {
             if (len == 0)
-                printf(">");
+                wprintf(L">");
             else
-                printf("*");
+                wprintf(L"*");
         }
         /*body[len].x=head.x-i;
         body[len].y=head.y;*/
@@ -386,7 +387,7 @@ void Bend()
                     body[len].x = bend[i].x;
                     body[len].y = bend[i].y + j;
                     GotoXY(body[len].x, body[len].y);
-                    printf("*");
+                    wprintf(L"*");
                     len++;
                     if (len == length)
                         break;
@@ -399,7 +400,7 @@ void Bend()
                     body[len].x = bend[i].x;
                     body[len].y = bend[i].y - j;
                     GotoXY(body[len].x, body[len].y);
-                    printf("*");
+                    wprintf(L"*");
                     len++;
                     if (len == length)
                         break;
@@ -416,7 +417,7 @@ void Bend()
                     body[len].x = bend[i].x + j;
                     body[len].y = bend[i].y;
                     GotoXY(body[len].x, body[len].y);
-                    printf("*");
+                    wprintf(L"*");
                     len++;
                     if (len == length)
                         break;
@@ -429,7 +430,7 @@ void Bend()
                     body[len].x = bend[i].x - j;
                     body[len].y = bend[i].y;
                     GotoXY(body[len].x, body[len].y);
-                    printf("*");
+                    wprintf(L"*");
                     len++;
                     if (len == length)
                         break;
@@ -442,31 +443,31 @@ void Border()
     // cls();
     int i;
     GotoXY(food.x, food.y);   /*displaying food*/
-    printf("F");
+    wprintf(L"F");
     for (i = 10; i < 71; i++)
     {
         GotoXY(i, 10);
-        printf("!");
+        wprintf(L"!");
         GotoXY(i, 30);
-        printf("!");
+        wprintf(L"!");
     }
     for (i = 10; i < 31; i++)
     {
         GotoXY(10, i);
-        printf("!");
+        wprintf(L"!");
         GotoXY(70, i);
-        printf("!");
+        wprintf(L"!");
     }
 }
 void Print()
 {
     //GotoXY(10,12);
-    printf("\tWelcome to the mini Snake game.(press any key to continue)\n");
+    wprintf(L"\tWelcome to the mini Snake game.(press any key to continue)\n");
     _getch();
     cls();
-    printf("\tGame instructions:\n");
-    printf("\n-> Use arrow keys to move the snake.\n\n-> You will be provided foods at the several coordinates of the screen which you have to eat. Everytime you eat a food the length of the snake will be increased by 1 element and thus the score.\n\n-> Here you are provided with three lives. Your life will decrease as you hit the wall or snake's body.\n\n-> YOu can pause the game in its middle by pressing any key. To continue the paused game press any other key once again\n\n-> If you want to exit press esc. \n");
-    printf("\n\nPress any key to play game...");
+    wprintf(L"\tGame instructions:\n");
+    wprintf(L"\n-> Use arrow keys to move the snake.\n\n-> You will be provided foods at the several coordinates of the screen which you have to eat. Everytime you eat a food the length of the snake will be increased by 1 element and thus the score.\n\n-> Here you are provided with three lives. Your life will decrease as you hit the wall or snake's body.\n\n-> YOu can pause the game in its middle by pressing any key. To continue the paused game press any other key once again\n\n-> If you want to exit press esc. \n");
+    wprintf(L"\n\nPress any key to play game...");
     if (_getch() == 27) // esc key
         exit(0);
 }
@@ -478,7 +479,7 @@ void record()
     info = fopen("record.txt", "a+");
     _getch();
     cls();
-    printf("Enter your name\n");
+    wprintf(L"Enter your name\n");
     scanf("%[^\n]", plname);
     //************************
     for (j = 0; plname[j] != '\0'; j++) //to convert the first letter after space to capital
@@ -525,10 +526,10 @@ int Score()
     int score;
     GotoXY(20, 8);
     score = length - 5;
-    printf("SCORE : %d", (length - 5));
+    wprintf(L"SCORE : %d", (length - 5));
     score = length - 5;
     GotoXY(50, 8);
-    printf("Life : %d", life);
+    wprintf(L"Life : %d", life);
     return score;
 }
 int Scoreonly()
@@ -545,9 +546,9 @@ void Up()
         GotoXY(head.x, head.y + i);
         {
             if (len == 0)
-                printf("^");
+                wprintf(L"^");
             else
-                printf("*");
+                wprintf(L"*");
         }
         body[len].x = head.x;
         body[len].y = head.y + i;
