@@ -22,6 +22,7 @@ int len;
 char key;
 int life;
 int score;
+int hardMode = 0;
 
 extern int tick;
 extern int g_bombTimer[G_HEIGHT][G_WIDTH];
@@ -85,10 +86,21 @@ void Move()
 	{
 		if (tick++ % TICKS_REQUIRED == 0) {
 			decreaseTimer();
-			if (score < 15) {
-				if (rand() % (15 - score) == 0) setBomb(score);
+			if (hardMode) {
+				setBomb(score);
+				setBomb(score);
 			}
-			else setBomb(score);
+
+			if (score < 15) {
+				if (rand() % (15 - score) == 0) {
+					setBomb(score);
+					if (hardMode) setBomb(score);
+				}
+			}
+			else {
+				setBomb(score);
+				if (hardMode) setBomb(score);
+			}
 		}
 
 		gotoxy(body[length - 1].x, body[length - 1].y);
@@ -245,6 +257,19 @@ void load()
 		wprintf(L". ");
 		Sleep(250);
 	}
+	for (int i = 0; i < 19; i++) {
+		plname[i] = toupper(plname[i]);
+	}
+
+	if (strcmp(plname, "SANS") == 0) {
+		cls();
+		hardMode = 1;
+		playMusic();
+		Sleep(100);
+		drawSans();
+		Sleep(500);
+		cls();
+	}
 }
 void Down()
 {
@@ -276,6 +301,7 @@ void Delay()
 }
 void ExitGame()
 {
+	Sleep(500);
 #ifndef DEBUG //if DEBUGGING, no life decrease
 	life--;
 #endif
@@ -297,6 +323,7 @@ void ExitGame()
 	else
 	{
 		cls();
+		musicOff();
 		wprintf(L"All lives completed\nBetter Luck Next Time!!!\nPress any key to quit the game\n");
 		record();
 		exit(0);
@@ -487,7 +514,6 @@ void Print()
 }
 void record()
 {
-	wprintf(L"test");
 	char nplname[20], cha, c;
 	int i, j, px;
 	FILE* info;
